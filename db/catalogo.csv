@@ -1,0 +1,42 @@
+codigo;descricao;atributos;preco_custo_centavos;ncm
+NX-SW08G;Switch gerenciável 8 portas Gigabit NODAL NX-SW08G;{"portas":"8"};38900;85176255
+NX-SW24G;Switch gerenciável 24 portas Gigabit NODAL NX-SW24G;{"portas":"24"};129000;85176255
+NX-SW48G;Switch gerenciável 48 portas Gigabit NODAL NX-SW48G;{"portas":"48"};289000;85176255
+NX-SW24P;Switch PoE 24 portas Gigabit 370W NODAL NX-SW24P;{"portas":"24"};214500;85176255
+NX-AP6;Access point Wi-Fi 6 dual band teto NODAL NX-AP6;{};57900;85176255
+NX-RT100;Roteador corporativo 5 portas Gigabit NODAL NX-RT100;{"portas":"5"};46500;85176255
+VX-C5E-305;Cabo de rede UTP Cat5e 4 pares azul caixa 305m VERTEX;{"categoria":"5e"};41000;85444900
+VX-C6-305;Cabo de rede UTP Cat6 4 pares azul caixa 305m VERTEX;{"categoria":"6"};68500;85444900
+VX-C6-305C;Cabo de rede UTP Cat6 4 pares cinza caixa 305m VERTEX;{"categoria":"6"};68500;85444900
+VX-C6A-305;Cabo de rede F/UTP Cat6A 4 pares caixa 305m VERTEX;{"categoria":"6a"};112000;85444900
+VX-PC6-15;Patch cord Cat6 1,5m azul VERTEX;{"categoria":"6"};1850;85444200
+VX-PC6-30;Patch cord Cat6 3m azul VERTEX;{"categoria":"6"};2650;85444200
+VX-PC5E-15;Patch cord Cat5e 1,5m cinza VERTEX;{"categoria":"5e"};1290;85444200
+VX-PP24;Patch panel 24 portas Cat6 19 polegadas VERTEX;{"portas":"24","categoria":"6"};21900;85366990
+VX-PP48;Patch panel 48 portas Cat6 19 polegadas VERTEX;{"portas":"48","categoria":"6"};39800;85366990
+VX-KJ6;Keystone fêmea RJ45 Cat6 VERTEX;{"categoria":"6"};690;85366990
+VX-DIO12;Distribuidor interno óptico 12 fibras SC/APC VERTEX;{"fibras":"12"};18700;90019010
+VX-CFO12;Cabo óptico monomodo 12 fibras indoor/outdoor metro VERTEX;{"fibras":"12"};1450;85447090
+AR-DJ1C20;Disjuntor monopolar curva C 20A ARCA;{"polos":"1","amperagem":"20"};1480;85362000
+AR-DJ1C32;Disjuntor monopolar curva C 32A ARCA;{"polos":"1","amperagem":"32"};1590;85362000
+AR-DJ3C32;Disjuntor tripolar curva C 32A ARCA;{"polos":"3","amperagem":"32"};7900;85362000
+AR-DJ3C63;Disjuntor tripolar curva C 63A ARCA;{"polos":"3","amperagem":"63"};10400;85362000
+AR-DR2-40;Interruptor diferencial residual DR bipolar 40A 30mA ARCA;{"polos":"2","amperagem":"40"};16500;85365090
+AR-CF25-100;Cabo flexível 2,5mm² 750V preto rolo 100m ARCA;{"bitola":"2.5"};31500;85444900
+AR-CF40-100;Cabo flexível 4mm² 750V preto rolo 100m ARCA;{"bitola":"4"};49800;85444900
+AR-CF60-100;Cabo flexível 6mm² 750V preto rolo 100m ARCA;{"bitola":"6"};74200;85444900
+PL-FT12-5;Fonte chaveada 12V 5A bivolt PULSO;{"tensao":"12","amperagem":"5"};4900;85044090
+PL-FT12-10;Fonte chaveada 12V 10A bivolt PULSO;{"tensao":"12","amperagem":"10"};8700;85044090
+PL-FT24-5;Fonte chaveada 24V 5A bivolt PULSO;{"tensao":"24","amperagem":"5"};7600;85044090
+PL-NB1500;Nobreak senoidal 1500VA 120V bateria interna PULSO;{"tensao":"120"};189000;85044040
+PL-NB3000;Nobreak senoidal 3000VA 220V bateria interna PULSO;{"tensao":"220"};412000;85044040
+PL-BT12-7;Bateria selada 12V 7Ah PULSO;{"tensao":"12"};5900;85072000
+AL-CAM2D;Câmera IP dome 2MP lente 2,8mm IR 30m ALTAIR;{"resolucao":"2"};19800;85258929
+AL-CAM4B;Câmera IP bullet 4MP lente 2,8mm IR 50m ALTAIR;{"resolucao":"4"};31500;85258929
+AL-CAM8B;Câmera IP bullet 8MP lente 4mm IR 60m ALTAIR;{"resolucao":"8"};58900;85258929
+AL-NVR16;Gravador NVR 16 canais PoE 4K ALTAIR;{};146000;85219090
+AL-NVR32;Gravador NVR 32 canais 4K ALTAIR;{};198000;85219090
+AL-HD4T;HD 4TB para videovigilância 7200rpm ALTAIR;{"capacidade":"4tb"};79500;84717012
+AL-HD8T;HD 8TB para videovigilância 7200rpm ALTAIR;{"capacidade":"8tb"};139000;84717012
+AL-CTL1;Controladora de acesso 1 porta com leitor de cartão ALTAIR;{};41500;85371090
+AL-FEC;Fechadura eletroímã 600 libras com suporte ALTAIR;{};23800;83011000

@@ -1,0 +1,28 @@
+:root { font-family: system-ui, sans-serif; color: #1c2430; background: #f6f7f9; }
+body { margin: 0; }
+main { max-width: 1100px; margin: 0 auto; padding: 24px 16px 64px; }
+h1 { margin: 0 0 4px; }
+h2 small { font-weight: 400; color: #5b6676; font-size: 0.8rem; margin-left: 8px; }
+.sub { color: #5b6676; margin-top: 0; }
+textarea { width: 100%; box-sizing: border-box; padding: 10px; font: inherit; border: 1px solid #c8cfd9; border-radius: 6px; }
+.acoes, .rodape { display: flex; gap: 12px; align-items: end; margin: 12px 0; flex-wrap: wrap; }
+.rodape label { display: flex; flex-direction: column; font-size: 0.85rem; gap: 4px; }
+button { background: #1f5eff; color: #fff; border: 0; padding: 8px 16px; border-radius: 6px; font: inherit; cursor: pointer; }
+button:disabled { opacity: 0.5; cursor: default; }
+input, select { font: inherit; padding: 6px; border: 1px solid #c8cfd9; border-radius: 6px; max-width: 100%; }
+table { width: 100%; border-collapse: collapse; background: #fff; border-radius: 6px; }
+th, td { text-align: left; padding: 8px; border-bottom: 1px solid #e3e7ed; vertical-align: top; }
+th { font-size: 0.8rem; color: #5b6676; }
+td.num { white-space: nowrap; }
+td select { width: 100%; }
+.busca input { width: 100%; box-sizing: border-box; margin-top: 4px; font-size: 0.8rem; }
+.preco { width: 90px; text-align: right; }
+small { display: block; color: #5b6676; }
+.selo { padding: 2px 8px; border-radius: 10px; font-size: 0.8rem; background: #e3e7ed; }
+.selo.alta { background: #d4f4dd; color: #0d5c24; }
+.selo.media { background: #fff1c2; color: #7a5a00; }
+.selo.baixa { background: #ffe0cc; color: #8a3a00; }
+.selo.nenhuma { background: #fbd5d5; color: #8a1f1f; }
+.erro { color: #8a1f1f; background: #fbd5d5; padding: 8px 12px; border-radius: 6px; }
+.aviso { color: #7a5a00; background: #fff1c2; padding: 8px 12px; border-radius: 6px; }
+@media (max-width: 720px) { th:nth-child(2), td:nth-child(2) { max-width: 160px; } }

@@ -1,0 +1,42 @@
+pedido;codigo
+switch 8p gigabit gerenciavel;NX-SW08G
+switch gerenciavel 24 portas giga;NX-SW24G
+switch 48 portas gerenciável nodal;NX-SW48G
+switch poe 24p 370w;NX-SW24P
+access point wifi 6 de teto;NX-AP6
+roteador 5 portas gigabit corporativo;NX-RT100
+cabo utp cat5e azul cx 305m;VX-C5E-305
+cabo de rede cat6 azul caixa 305 metros;VX-C6-305
+cabo utp cat 6 cinza 305m;VX-C6-305C
+cabo cat6a blindado 305m;VX-C6A-305
+patch cord cat6 1,5m;VX-PC6-15
+patch cord cat6 3 metros azul;VX-PC6-30
+patchcord cat5e 1,5m cinza;VX-PC5E-15
+patch panel 24 portas cat6;VX-PP24
+patch panel 48p cat6 19";VX-PP48
+keystone rj45 cat6 femea;VX-KJ6
+dio 12 fibras sc/apc;VX-DIO12
+cabo optico 12 fibras monomodo metro;VX-CFO12
+disjuntor 1p 20a curva c;AR-DJ1C20
+disjuntor monopolar 32a;AR-DJ1C32
+disjuntor tripolar 32a curva c;AR-DJ3C32
+disjuntor 3p 63a;AR-DJ3C63
+dr 40a 30ma bipolar;AR-DR2-40
+cabo flexivel 2,5mm preto rolo 100m;AR-CF25-100
+cabo flexivel 4mm2 750v 100m;AR-CF40-100
+cabo flexivel 6 mm preto rolo;AR-CF60-100
+fonte 12v 5a bivolt;PL-FT12-5
+fonte chaveada 12v 10a;PL-FT12-10
+fonte 24v 5a;PL-FT24-5
+nobreak 1500va senoidal;PL-NB1500
+nobreak senoidal 3kva 220v;PL-NB3000
+bateria selada 12v 7ah;PL-BT12-7
+camera ip dome 2mp;AL-CAM2D
+camera ip bullet 4mp 2,8mm;AL-CAM4B
+camera bullet 8mp ir 60m;AL-CAM8B
+nvr 16 canais poe 4k;AL-NVR16
+gravador nvr 32 canais;AL-NVR32
+hd 4tb cftv;AL-HD4T
+hd 8tb 7200rpm videovigilancia;AL-HD8T
+controladora acesso 1 porta leitor cartao;AL-CTL1
+fechadura eletroima 600 lbs;AL-FEC
