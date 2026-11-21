@@ -1,164 +1,126 @@
 # Cotador
 
-Transforma um pedido de cotação recebido por e-mail (texto, `.eml`, `.msg`, planilha, PDF) em itens casados com o
-catálogo de produtos e num CSV pronto para importar no ERP. O operador revisa o que o sistema sugeriu, corrige o que
-precisar, e cada correção vira memória para as próximas cotações.
+Cotador turns a quote request received by email (text, `.eml`, `.msg`, spreadsheet, PDF) into items matched
+against the product catalog and a CSV ready to import into the ERP. The operator reviews what the system
+suggested, corrects whatever is needed, and each correction becomes memory for future quotes.
 
-> Versão de portfólio. O sistema roda em produção para um cliente; aqui marca e dados são fictícios ("Nexo
-> Distribuição", uma distribuidora de tecnologia inventada), e o código em produção é privado por contrato.
+> Portfolio version. This repository is a portfolio sample of a system running in production for a client; here
+> brand and data are fictional ("Nexo Distribuição", an invented technology distributor), and the full production
+> code is private by contract.
 
-## Por que existe
+## Why it exists
 
-Distribuidoras B2B recebem dezenas de pedidos de cotação por dia, cada um num formato: tabela dentro do corpo do
-e-mail, planilha anexa, PDF, lista em texto corrido, corrente de respostas com o pedido enterrado no meio. Alguém
-lê tudo, procura cada item no catálogo e digita a proposta no ERP. É lento e o erro mais caro é silencioso:
-um switch de 24 portas no lugar de um de 48, cabo Cat5e no lugar de Cat6.
+B2B distributors receive dozens of quote requests a day, each in its own format: a table inside the email
+body, an attached spreadsheet, a PDF, a list written as continuous text, a reply chain with the request buried in the
+middle. Someone reads all of it, looks up each item in the catalog, and types the proposal into the ERP. It is
+slow, and the most expensive mistake is a silent one: a 24-port switch instead of a 48-port one, Cat5e cable
+instead of Cat6.
 
-O Cotador automatiza a leitura e a busca, mas mantém o operador como última palavra: o sistema sugere e registra,
-nunca decide sozinho.
+Cotador automates the reading and the search, but the operator has the last word: the system suggests and
+records, and never decides on its own.
 
-## Como funciona
+## How it works
 
 ```mermaid
 flowchart LR
-    A[E-mail, planilha,<br/>PDF ou texto] --> B[Ingestão<br/>blocos ordenados]
-    B --> C[Extração<br/>LLM + validação]
-    C --> D{1. Memória<br/>cliente / global}
-    D -- achou --> G[Itens casados]
-    D -- não --> E[2. Candidatos<br/>pg_trgm top-40]
-    E --> F[3. LLM escolhe<br/>entre candidatos]
+    A[Email, spreadsheet,<br/>PDF or text] --> B[Ingestion<br/>ordered blocks]
+    B --> C[Extraction<br/>LLM + validation]
+    C --> D{1. Memory<br/>customer / global}
+    D -- found --> G[Matched items]
+    D -- not found --> E[2. Candidates<br/>pg_trgm top-40]
+    E --> F[3. LLM chooses<br/>among candidates]
     F --> G
-    G --> H[Operador revisa<br/>e confirma]
-    H -- confirmação --> D
-    H --> I[CSV do ERP]
+    G --> H[Operator reviews<br/>and confirms]
+    H -- confirmation --> D
+    H --> I[ERP CSV]
 ```
 
-1. **Ingestão** (`app/ingestao`): qualquer entrada vira uma lista ordenada de blocos `texto | tabela | anexo`.
-   Tabelas de dados são separadas de tabelas de layout (assinatura), citações de respostas anteriores são marcadas,
-   anexos repetidos são descartados por hash, imagens de assinatura são ignoradas e anexo ilegível vira aviso, não erro.
-2. **Extração** (`app/extracao`): o modelo devolve cliente, CNPJ, destino e itens com `descricao_original` literal.
-   Resposta validada com pydantic, uma nova tentativa em caso de JSON inválido, cache por hash do conteúdo.
-3. **Casamento** (`app/matching`): memória, depois candidatos por trigramas, depois o modelo escolhendo entre os
-   candidatos. Atributos críticos divergentes (portas, categoria do cabo, tensão, bitola...) retiram o candidato
-   antes de o modelo vê-lo. Ver [ADR 0001](docs/adr/0001-tres-camadas-antes-do-modelo.md).
-4. **Exportação** (`app/exportacao`): CSV de 45 colunas, UTF-8 com BOM, CRLF, separador `,` (vírgula decimal entre aspas). Os invariantes
-   são testados, incluindo um arquivo golden. Ver [ADR 0003](docs/adr/0003-invariantes-do-csv-testados.md).
-   (O layout segue o de importação de propostas de ERPs como o ERP Tiny.)
+1. **Ingestion** (`app/ingestao`): any input becomes an ordered list of `texto | tabela | anexo` blocks.
+   Data tables are separated from layout tables (the signature), quotations of earlier replies are marked,
+   repeated attachments are discarded by hash, signature images are ignored, and an unreadable attachment
+   becomes a warning, not an error.
+2. **Extraction** (`app/extracao`): the model returns the customer, CNPJ (Brazilian company registration number),
+   destination, and items with a verbatim `descricao_original`. The response is validated with pydantic, there
+   is one retry when the JSON is invalid, and results are cached by a hash of the content.
+3. **Matching** (`app/matching`): memory, then trigram candidates, then the model choosing among the
+   candidates. Divergent critical attributes (ports, cable category, voltage, gauge...) remove the candidate
+   before the model sees it. See [ADR 0001](docs/adr/0001-three-layers-before-calling-the-language-model.md).
+4. **Export** (`app/exportacao`): a 45-column CSV, UTF-8 with BOM, CRLF, `,` separator (decimal comma inside
+   quotes). The invariants are tested, including a golden file. See [ADR 0003](docs/adr/0003-erp-csv-invariants-tested-byte-for-byte.md).
+   (The layout follows the proposal-import layout of ERPs such as Tiny ERP.)
 
 ## Stack
 
-Python 3.12, FastAPI, pydantic v2, psycopg 3, PostgreSQL 16 com `pg_trgm` (índice GiST), pdfplumber, openpyxl,
-extract-msg, httpx. Front-end em React 18 + Vite + TypeScript. Testes com pytest e Vitest; lint com ruff e ESLint;
-CI no GitHub Actions com Postgres de verdade.
+Python 3.12, FastAPI, pydantic v2, psycopg 3, PostgreSQL 16 with `pg_trgm` (GiST index), pdfplumber, openpyxl,
+extract-msg, httpx. Front end in React 18 + Vite + TypeScript. Tests with pytest and Vitest; lint with ruff and
+ESLint; CI on GitHub Actions with a real Postgres.
 
-## Como rodar
+## How to run
 
-Com Docker:
+With Docker:
 
 ```bash
 docker compose up --build
 # interface: http://localhost:8080   API: http://localhost:8000/docs
 ```
 
-O banco sobe com o esquema e 41 produtos fictícios. Por padrão `LLM_API_URL=demo`, um provedor de demonstração
-(regra simples, sem modelo) que lê linhas como `4x switch 24 portas gigabit`. Para usar um modelo de verdade,
-copie `.env.example` para `.env` e preencha `LLM_API_URL`, `LLM_API_KEY` e `LLM_MODEL`: qualquer API de chat no
-formato OpenAI funciona, sem mudar código.
+The database comes up with the schema and 41 fictional products. By default `LLM_API_URL=demo`, a demonstration
+provider (a simple rule, no model) that reads lines such as `4x switch 24 portas gigabit`. To use a real model,
+copy `.env.example` to `.env` and fill in `LLM_API_URL`, `LLM_API_KEY` and `LLM_MODEL`: any chat API in the
+OpenAI format works, with no code changes.
 
-Sem Docker:
+Without Docker:
 
 ```bash
 python -m venv .venv && . .venv/bin/activate
 pip install -e ".[dev]"
-LLM_API_URL=demo uvicorn app.main:criar_app_do_ambiente --factory   # sem DATABASE_URL usa o catálogo em memória
+LLM_API_URL=demo uvicorn app.main:criar_app_do_ambiente --factory   # without DATABASE_URL, uses the in-memory catalog
 cd web && npm ci && npm run dev                                      # http://localhost:5173
 ```
 
-Testes e verificações:
+Tests and checks:
 
 ```bash
 ruff check . && ruff format --check .
-pytest                                  # testes de banco rodam se TEST_DATABASE_URL apontar para um Postgres com pg_trgm
-python scripts/avaliar_recall.py        # recall@k do gerador de candidatos
+pytest                                  # database tests run if TEST_DATABASE_URL points to a Postgres with pg_trgm
+python scripts/avaliar_recall.py        # recall@k of the candidate generator
 cd web && npx tsc --noEmit && npx eslint . && npx vitest run && npx vite build
 ```
 
-## Estrutura
+## Structure
 
-| Caminho | O que tem |
+| Path | Contents |
 |---|---|
-| `app/ingestao/` | e-mail (`.eml`, `.msg`), HTML, planilha, CSV, PDF para blocos canônicos |
-| `app/extracao/` | porta `ProvedorLLM`, adaptador HTTP, fake, extrator com cache e nova tentativa |
-| `app/matching/` | memória, scorer, atributos críticos, seletor em lotes, motor das três camadas |
-| `app/exportacao/` | CSV do ERP, validação de CNPJ, formatação de preço |
-| `app/api/` | rotas FastAPI, casos de uso, repositórios (Postgres e memória) |
-| `app/main.py` | fábrica da aplicação, com repositório e provedor injetáveis |
-| `db/` | migração, catálogo de exemplo (`catalogo.csv`), `seed.sql` gerado dele, casos de avaliação |
+| `app/ingestao/` | email (`.eml`, `.msg`), HTML, spreadsheet, CSV, PDF into canonical blocks |
+| `app/extracao/` | `ProvedorLLM` port, HTTP adapter, fake, extractor with cache and retry |
+| `app/matching/` | memory, scorer, critical attributes, batch selector, three-layer engine |
+| `app/exportacao/` | ERP CSV, CNPJ validation, price formatting |
+| `app/api/` | FastAPI routes, use cases, repositories (Postgres and in-memory) |
+| `app/main.py` | application factory, with injectable repository and provider |
+| `db/` | migration, example catalog (`catalogo.csv`), `seed.sql` generated from it, evaluation cases |
 | `scripts/` | `avaliar_recall.py`, `gerar_seed.py` |
-| `web/` | tela única: colar/enviar, tabela editável, gerar CSV |
-| `docs/adr/` | decisões de arquitetura |
+| `web/` | single screen: paste/send, editable table, generate CSV |
+| `docs/adr/` | architecture decisions |
 
 ## API
 
-| Método e rota | Função |
+| Method and route | Purpose |
 |---|---|
-| `POST /propostas/extrair` | multipart com `texto` e/ou `arquivo`; lê, casa e salva a proposta |
-| `GET /propostas/{id}` | proposta com itens, candidatos e confiança |
-| `PUT /propostas/{id}/itens/{n}` | escolhe produto, quantidade ou preço; escolher produto grava na memória |
-| `POST /propostas/{id}/csv` | gera o CSV de importação |
-| `GET /produtos?q=` | busca no catálogo por texto ou código |
+| `POST /propostas/extrair` | multipart with `texto` and/or `arquivo`; reads, matches, and saves the proposal |
+| `GET /propostas/{id}` | proposal with items, candidates, and confidence |
+| `PUT /propostas/{id}/itens/{n}` | chooses product, quantity, or price; choosing a product writes it to memory |
+| `POST /propostas/{id}/csv` | generates the import CSV |
+| `GET /produtos?q=` | searches the catalog by text or code |
 
-## Decisões e limites
+## Decisions and limits
 
-- Preço sugerido = custo do catálogo + margem fixa (`MARGEM_PADRAO_PCT`, 30 por padrão), editável por item. Tabela de
-  preços por cliente não está no escopo.
-- `scripts/avaliar_recall.py` mede o recall@k da camada 2 sobre `db/avaliacao.csv`. O catálogo de exemplo tem 41
-  produtos, então o recall@40 é alto por construção; o script imprime o tamanho do catálogo para isso ficar explícito.
-  Rode no seu catálogo antes de confiar no número.
-- O modelo escolhe só entre candidatos; a confiança que ele informa é declaração dele, não probabilidade calibrada.
-- `.msg` usa `extract-msg` e não tem fixture sintética nos testes (o formato é binário); `.eml`, CSV, XLSX e PDF têm.
-- Sem autenticação: pensado para rodar atrás da rede da empresa ou de um proxy.
-
----
-
-## English
-
-Cotador turns a quote request received by e-mail (plain text, `.eml`, `.msg`, spreadsheet, PDF) into line items
-matched against a product catalog and an ERP-ready import CSV. The operator reviews the suggestions, fixes what is
-wrong, and every confirmation becomes memory for future quotes.
-
-> Portfolio version. The system runs in production for a client; here brand and data are fictional ("Nexo
-> Distribuição", an invented technology distributor), and the production code is private by contract.
-
-**Why.** B2B distributors get dozens of quote requests a day in every shape: tables inside the e-mail body,
-attached spreadsheets, PDFs, reply chains with the request buried in the middle. Someone reads it all, looks up each
-item in the catalog and types the proposal into the ERP. The expensive mistake is the silent one: a 24-port switch
-instead of a 48-port one, Cat5e instead of Cat6. Cotador automates reading and lookup but keeps the operator in
-charge: the system suggests and records, it never decides alone.
-
-**Pipeline.**
-1. *Ingestion*: any input becomes ordered `text | table | attachment` blocks (data tables vs. layout tables, quoted
-   replies flagged, attachments de-duplicated by hash, signature images dropped, unreadable attachments reported
-   instead of raising).
-2. *Extraction*: an LLM returns customer, tax id, destination and items with a verbatim `descricao_original`;
-   pydantic validation, one retry on bad JSON, cache keyed by content hash.
-3. *Matching*, three layers before any model decides: confirmed-pair memory (per customer, then global), trigram
-   candidates (`pg_trgm` GiST, top 40, with a pure-Python fallback scorer), then the LLM picks among candidates in
-   small batches. Critical-attribute divergence (ports, cable category, voltage, gauge...) removes a candidate before
-   the model sees it. See ADR 0001.
-4. *Export*: 45-column CSV, UTF-8 BOM, CRLF, `,` separator (decimal comma quoted), same proposal number on every row, tax id
-   validation, golden-file test. See ADR 0003.
-
-**LLM-agnostic.** The code depends on a single port, `ProvedorLLM`. The HTTP adapter speaks the common JSON chat
-format and is configured with `LLM_API_URL`, `LLM_API_KEY`, `LLM_MODEL`; a fake adapter backs the tests and a demo
-adapter (`LLM_API_URL=demo`) lets the UI run with no key.
-
-**Run it.** `docker compose up --build`, then open http://localhost:8080 (API docs at http://localhost:8000/docs).
-Without Docker: `pip install -e ".[dev]"`, `uvicorn app.main:criar_app_do_ambiente --factory`, and `npm ci && npm run dev`
-in `web/`. Checks: `ruff check . && ruff format --check . && pytest`, `python scripts/avaliar_recall.py`, and in `web/`
-`npx tsc --noEmit && npx eslint . && npx vitest run && npx vite build`.
-
-**Limits.** The example catalog has 41 products, so recall@40 is high by construction (the script prints the catalog
-size); measure on your own catalog. The suggested price is cost plus a flat margin. The confidence the model reports
-is its own claim, not a calibrated probability. `.msg` parsing has no synthetic fixture in the tests. No
-authentication: meant to run behind a private network or proxy.
+- Suggested price = catalog cost + a fixed margin (`MARGEM_PADRAO_PCT`, 30 by default), editable per item. A
+  per-customer price table is out of scope.
+- `scripts/avaliar_recall.py` measures layer 2 recall@k on `db/avaliacao.csv`. The example catalog has 41
+  products, so recall@40 is high by construction; the script prints the catalog size so that stays explicit.
+  Run it on your catalog before trusting the number.
+- The model chooses only among candidates; the confidence it reports is its own claim, not a calibrated
+  probability.
+- `.msg` uses `extract-msg` and has no synthetic fixture in the tests (the format is binary); `.eml`, CSV, XLSX
+  and PDF do.
+- No authentication: intended to run behind the company network or a proxy.
